@@ -1,2 +1,4 @@
 __pycache__
 /*.zip
+/office_tools_cli.egg-info
+/build
