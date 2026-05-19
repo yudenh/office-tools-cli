@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "office-tools-cli"
+version = "0.1.0"
+description = "Local Office document processing CLI."
+requires-python = ">=3.10"
+dependencies = [
+    "python-docx",
+    "pywin32; platform_system == 'Windows'",
+    "PyMuPDF",
+    "pdf2docx",
+]
+
+[project.scripts]
+office-tools = "main_script:main"
+
+[tool.setuptools]
+py-modules = ["main_script"]
+packages = ["modules"]
