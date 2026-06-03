@@ -11,6 +11,12 @@ DEFAULT_WATERMARK_TOP = 200
 DEFAULT_WATERMARK_WIDTH = 100
 DEFAULT_WATERMARK_HEIGHT = 100
 
+WD_RELATIVE_HORIZONTAL_POSITION_PAGE = 1
+WD_RELATIVE_VERTICAL_POSITION_PAGE = 1
+WD_WRAP_BEHIND = 5
+WD_BORDER_BOTTOM = -3
+WD_LINE_STYLE_NONE = 0
+
 
 def remove_author_info_from_docx(file_path):
     """
@@ -123,16 +129,16 @@ def add_image_watermark(
                 Width=width,
                 Height=height
             )
-            shape.RelativeHorizontalPosition = win32.constants.wdRelativeHorizontalPositionPage
-            shape.RelativeVerticalPosition = win32.constants.wdRelativeVerticalPositionPage
+            shape.RelativeHorizontalPosition = WD_RELATIVE_HORIZONTAL_POSITION_PAGE
+            shape.RelativeVerticalPosition = WD_RELATIVE_VERTICAL_POSITION_PAGE
             # 设置图片的环绕方式为衬于文字下方
-            shape.WrapFormat.Type = win32.constants.wdWrapBehind
+            shape.WrapFormat.Type = WD_WRAP_BEHIND
             # 设置图片的透明度 (实际测试不起作用)
             shape.Fill.Transparency = 0.5
             # 去除图片的填充（灰色背景）
             shape.Fill.Visible = 0
             # 去除页眉分隔线
-            header.Range.Borders(win32.constants.wdBorderBottom).LineStyle = win32.constants.wdLineStyleNone            
+            header.Range.Borders(WD_BORDER_BOTTOM).LineStyle = WD_LINE_STYLE_NONE            
 
         # 保存文档
         doc.Save()

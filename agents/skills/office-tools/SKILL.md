@@ -78,3 +78,4 @@ office-tools merge-pdfs "D:\pdfs" --json
 - Make sure target files are not open in Word/WPS before modifying or converting them.
 - `pdf-to-docx` quality depends on the source PDF structure.
 - `pdf-to-images` overwrites the derived output directory if it already exists.
+- **Error handling**: If a command fails or raises an error, stop immediately and report the error to the user. Do NOT attempt to diagnose or fix the issue yourself.
