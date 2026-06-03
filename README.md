@@ -1,6 +1,9 @@
 # Office Tools
 
 本项目提供一个本地 Office/PDF 文件处理命令行工具，支持 DOCX 作者信息清理、DOCX/PDF 转换、PDF 合并、DOCX 内容查找和 DOCX 图片水印。
+附带有SKILL，便于AI调用。
+
+资源推荐：[专为 AI 智能体设计的 Office 套件。零依赖。全平台。](https://github.com/iOfficeAI/OfficeCLI)
 
 ## 功能
 
@@ -105,7 +108,7 @@ office-tools find-docx "D:\docs" --query "合同 金额" --json
 给 DOCX 添加图片水印：
 
 ```powershell
-office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --json
+office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --watermark-left 100 --watermark-top 200 --watermark-width 100 --watermark-height 100 --json
 ```
 
 ## 参数
@@ -118,6 +121,10 @@ office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --json
 | `--output <path>` | 单文件操作的输出文件或目录 |
 | `--query <text>` | `find-docx` 要查找的字符串，多个关键词用空格分隔 |
 | `--image <path>` | `watermark-docx` 使用的水印图片路径 |
+| `--watermark-left <point>` | `watermark-docx` 水印图片水平位置，默认 `100` |
+| `--watermark-top <point>` | `watermark-docx` 水印图片垂直位置，默认 `200` |
+| `--watermark-width <point>` | `watermark-docx` 水印图片宽度，默认 `100` |
+| `--watermark-height <point>` | `watermark-docx` 水印图片高度，默认 `100` |
 | `--json` | 输出 JSON，便于脚本或 AI 解析 |
 
 ## 路径模式

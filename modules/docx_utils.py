@@ -6,6 +6,11 @@ import os
 
 # pip install python-docx pywin32
 
+DEFAULT_WATERMARK_LEFT = 100
+DEFAULT_WATERMARK_TOP = 200
+DEFAULT_WATERMARK_WIDTH = 100
+DEFAULT_WATERMARK_HEIGHT = 100
+
 
 def remove_author_info_from_docx(file_path):
     """
@@ -76,12 +81,23 @@ def find_string_in_docx(file_path, search_string, quiet=False):
     return matches
 
 
-def add_image_watermark(docx_path, image_path):
+def add_image_watermark(
+    docx_path,
+    image_path,
+    left=DEFAULT_WATERMARK_LEFT,
+    top=DEFAULT_WATERMARK_TOP,
+    width=DEFAULT_WATERMARK_WIDTH,
+    height=DEFAULT_WATERMARK_HEIGHT,
+):
     """
     使用 pywin32 库为指定的 DOCX 文件添加指定图片水印。
 
     :param docx_path: 要处理的 DOCX 文件的路径
     :param image_path: 水印图片的路径
+    :param left: 水印图片的水平位置，单位为 point
+    :param top: 水印图片的垂直位置，单位为 point
+    :param width: 水印图片宽度，单位为 point
+    :param height: 水印图片高度，单位为 point
     """
     # 创建 Word 应用程序对象
     word = win32.DispatchEx("Word.Application")
@@ -102,13 +118,15 @@ def add_image_watermark(docx_path, image_path):
                 FileName=image_path,
                 LinkToFile=False,
                 SaveWithDocument=True,
-                Left=100,  # 图片的水平位置
-                Top=200,   # 图片的垂直位置
-                Width=100,  # 图片宽度
-                Height=100  # 图片高度
+                Left=left,
+                Top=top,
+                Width=width,
+                Height=height
             )
-            # # 设置图片的环绕方式为衬于文字下方
-            shape.WrapFormat.Type = 3
+            shape.RelativeHorizontalPosition = win32.constants.wdRelativeHorizontalPositionPage
+            shape.RelativeVerticalPosition = win32.constants.wdRelativeVerticalPositionPage
+            # 设置图片的环绕方式为衬于文字下方
+            shape.WrapFormat.Type = win32.constants.wdWrapBehind
             # 设置图片的透明度 (实际测试不起作用)
             shape.Fill.Transparency = 0.5
             # 去除图片的填充（灰色背景）

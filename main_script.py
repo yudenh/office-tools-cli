@@ -84,16 +84,32 @@ def show_input_file_path():
     return file_path
 
 
+def input_float_with_default(prompt, default):
+    value = input(f"{prompt}(默认 {default}): ").strip()
+    return default if value == "" else float(value)
+
+
+def show_watermark_options():
+    image_path = input("请输入水印图片路径: ").strip()
+    return image_path, {
+        "left": input_float_with_default("请输入水印图片水平位置(point)", docx_utils.DEFAULT_WATERMARK_LEFT),
+        "top": input_float_with_default("请输入水印图片垂直位置(point)", docx_utils.DEFAULT_WATERMARK_TOP),
+        "width": input_float_with_default("请输入水印图片宽度(point)", docx_utils.DEFAULT_WATERMARK_WIDTH),
+        "height": input_float_with_default("请输入水印图片高度(point)", docx_utils.DEFAULT_WATERMARK_HEIGHT),
+    }
+
+
 def process_file(i, file_path):
     if i == 4:
         return
 
     search_string = ""
     image_path = ""
+    watermark_options = {}
     if i == 5:
         search_string = input("请输入要查找的字符串(多个用空格分开): ").strip()
     if i == 6:
-        image_path = input("请输入水印图片路径: ").strip()
+        image_path, watermark_options = show_watermark_options()
 
     result = HandleResult.Silent
     out_file = ""
@@ -113,7 +129,7 @@ def process_file(i, file_path):
         elif i == 5:
             docx_utils.find_string_in_docx(file_path, search_string)
         elif i == 6:
-            result = docx_utils.add_image_watermark(file_path, image_path)
+            result = docx_utils.add_image_watermark(file_path, image_path, **watermark_options)
 
         if result == HandleResult.Skiped:
             print("已跳过：" + file_path)
@@ -157,10 +173,11 @@ def process_directory(i, suffix, dir_path):
 
     search_string = ""
     image_path = ""
+    watermark_options = {}
     if i == 5:
         search_string = input("请输入要查找的字符串(多个用空格分开): ").strip()
     if i == 6:
-        image_path = input("请输入水印图片路径: ").strip()
+        image_path, watermark_options = show_watermark_options()
 
     start_time = datetime.now()
     print("待处理文件个数：" + str(len(file_list)))
@@ -189,7 +206,7 @@ def process_directory(i, suffix, dir_path):
             elif i == 5:
                 docx_utils.find_string_in_docx(file_path, search_string)
             elif i == 6:
-                result = docx_utils.add_image_watermark(file_path, image_path)
+                result = docx_utils.add_image_watermark(file_path, image_path, **watermark_options)
 
             success_cnt += 1
 
@@ -281,6 +298,26 @@ def build_parser():
         help="watermark-docx 使用的水印图片路径。",
     )
     parser.add_argument(
+        "--watermark-left",
+        type=float,
+        help=f"watermark-docx 水印图片水平位置，单位 point，默认 {docx_utils.DEFAULT_WATERMARK_LEFT}。",
+    )
+    parser.add_argument(
+        "--watermark-top",
+        type=float,
+        help=f"watermark-docx 水印图片垂直位置，单位 point，默认 {docx_utils.DEFAULT_WATERMARK_TOP}。",
+    )
+    parser.add_argument(
+        "--watermark-width",
+        type=float,
+        help=f"watermark-docx 水印图片宽度，单位 point，默认 {docx_utils.DEFAULT_WATERMARK_WIDTH}。",
+    )
+    parser.add_argument(
+        "--watermark-height",
+        type=float,
+        help=f"watermark-docx 水印图片高度，单位 point，默认 {docx_utils.DEFAULT_WATERMARK_HEIGHT}。",
+    )
+    parser.add_argument(
         "--json",
         action="store_true",
         help="输出单个 JSON 对象，便于 AI 或脚本解析。",
@@ -313,7 +350,20 @@ def make_item(path, ok=True, status="", output="", error="", matches=None):
     return item
 
 
-def run_file_command(command, file_path, output=None, query=None, image=None):
+def make_watermark_options(args):
+    options = {}
+    if args.watermark_left is not None:
+        options["left"] = args.watermark_left
+    if args.watermark_top is not None:
+        options["top"] = args.watermark_top
+    if args.watermark_width is not None:
+        options["width"] = args.watermark_width
+    if args.watermark_height is not None:
+        options["height"] = args.watermark_height
+    return options
+
+
+def run_file_command(command, file_path, output=None, query=None, image=None, watermark_options=None):
     try:
         if command == "remove-author":
             result = docx_utils.remove_author_info_from_docx(file_path)
@@ -334,7 +384,7 @@ def run_file_command(command, file_path, output=None, query=None, image=None):
             matches = docx_utils.find_string_in_docx(file_path, query or "", quiet=True)
             return make_item(file_path, status="matched" if matches else "not_found", matches=matches)
         if command == "watermark-docx":
-            result = docx_utils.add_image_watermark(file_path, image)
+            result = docx_utils.add_image_watermark(file_path, image, **(watermark_options or {}))
             return make_item(file_path, status=RESULT_NAMES[result])
         return make_item(file_path, ok=False, status="unsupported", error="Unsupported file command")
     except Exception as e:
@@ -356,6 +406,7 @@ def run_command(args):
 
     start_time = datetime.now()
     items = []
+    watermark_options = make_watermark_options(args)
     if args.command == "merge-pdfs":
         try:
             out_file = pdf_utils.merge_pdfs(args.path)
@@ -365,7 +416,15 @@ def run_command(args):
     elif mode == "dir":
         files = file_utils.filter_files(args.path, spec["suffix"], exclude_prefix="~$")
         for _, file_path in files:
-            items.append(run_file_command(args.command, file_path, query=args.query, image=args.image))
+            items.append(
+                run_file_command(
+                    args.command,
+                    file_path,
+                    query=args.query,
+                    image=args.image,
+                    watermark_options=watermark_options,
+                )
+            )
     else:
         items.append(
             run_file_command(
@@ -374,6 +433,7 @@ def run_command(args):
                 output=args.output,
                 query=args.query,
                 image=args.image,
+                watermark_options=watermark_options,
             )
         )
 
