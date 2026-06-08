@@ -7,9 +7,9 @@ import os
 # pip install python-docx pywin32
 
 POINTS_PER_CM = 72 / 2.54
-DEFAULT_WATERMARK_LEFT = 4 * POINTS_PER_CM
-DEFAULT_WATERMARK_TOP = 6 * POINTS_PER_CM
-DEFAULT_WATERMARK_WIDTH = 4 * POINTS_PER_CM
+DEFAULT_WATERMARK_LEFT = 4
+DEFAULT_WATERMARK_TOP = 6
+DEFAULT_WATERMARK_WIDTH = 4
 DEFAULT_WATERMARK_HEIGHT = None
 
 WD_RELATIVE_HORIZONTAL_POSITION_PAGE = 1
@@ -17,6 +17,10 @@ WD_RELATIVE_VERTICAL_POSITION_PAGE = 1
 WD_WRAP_BEHIND = 5
 WD_BORDER_BOTTOM = -3
 WD_LINE_STYLE_NONE = 0
+
+
+def cm_to_points(value):
+    return value * POINTS_PER_CM
 
 
 def remove_author_info_from_docx(file_path):
@@ -101,11 +105,16 @@ def add_image_watermark(
 
     :param docx_path: 要处理的 DOCX 文件的路径
     :param image_path: 水印图片的路径
-    :param left: 水印图片的水平位置，单位为 point
-    :param top: 水印图片的垂直位置，单位为 point
-    :param width: 水印图片宽度，单位为 point
-    :param height: 水印图片高度，单位为 point。为 None 时按宽度等比自适应
+    :param left: 水印图片的水平位置，单位为 cm
+    :param top: 水印图片的垂直位置，单位为 cm
+    :param width: 水印图片宽度，单位为 cm
+    :param height: 水印图片高度，单位为 cm。为 None 时按宽度等比自适应
     """
+    left_points = cm_to_points(left)
+    top_points = cm_to_points(top)
+    width_points = cm_to_points(width)
+    height_points = None if height is None else cm_to_points(height)
+
     # 创建 Word 应用程序对象
     word = win32.DispatchEx("Word.Application")
     # 不显示 Word 应用程序窗口
@@ -125,13 +134,13 @@ def add_image_watermark(
                 FileName=image_path,
                 LinkToFile=False,
                 SaveWithDocument=True,
-                Left=left,
-                Top=top,
+                Left=left_points,
+                Top=top_points,
             )
             shape.LockAspectRatio = True
-            shape.Width = width
-            if height is not None:
-                shape.Height = height
+            shape.Width = width_points
+            if height_points is not None:
+                shape.Height = height_points
             shape.RelativeHorizontalPosition = WD_RELATIVE_HORIZONTAL_POSITION_PAGE
             shape.RelativeVerticalPosition = WD_RELATIVE_VERTICAL_POSITION_PAGE
             # 设置图片的环绕方式为衬于文字下方

@@ -128,10 +128,10 @@ office-tools watermark-pdf "D:\docs\a.pdf" --image "D:\logo.png" --json
 | `--output <path>` | 单文件操作的输出文件或目录 |
 | `--query <text>` | `find-docx` 要查找的字符串，多个关键词用空格分隔 |
 | `--image <path>` | `watermark-docx` 和 `watermark-pdf` 使用的水印图片路径 |
-| `--watermark-left <point>` | 水印图片水平位置，`watermark-docx` 和 `watermark-pdf` 默认 `4cm` |
-| `--watermark-top <point>` | 水印图片垂直位置，`watermark-docx` 和 `watermark-pdf` 默认 `6cm` |
-| `--watermark-width <point>` | 水印图片宽度，`watermark-docx` 和 `watermark-pdf` 默认 `4cm` |
-| `--watermark-height <point>` | 水印图片高度，未指定时按图片比例自适应 |
+| `--watermark-left <cm>` | 水印图片水平位置，`watermark-docx` 和 `watermark-pdf` 默认 `4` |
+| `--watermark-top <cm>` | 水印图片垂直位置，`watermark-docx` 和 `watermark-pdf` 默认 `6` |
+| `--watermark-width <cm>` | 水印图片宽度，`watermark-docx` 和 `watermark-pdf` 默认 `4` |
+| `--watermark-height <cm>` | 水印图片高度，未指定时按图片比例自适应 |
 | `--json` | 输出 JSON，便于脚本或 AI 解析 |
 
 ## 路径模式

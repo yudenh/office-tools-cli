@@ -31,10 +31,10 @@ office-tools --help
 | Render PDF pages to PNG images | `pdf-to-images <file-or-dir>` |
 | Merge all PDFs in one directory | `merge-pdfs <dir>` |
 | Search text in DOCX files | `find-docx <file-or-dir> --query "keyword1 keyword2"` |
-| Add image watermark to DOCX | `watermark-docx <file-or-dir> --image <image-path> [--watermark-left <point>] [--watermark-top <point>] [--watermark-width <point>] [--watermark-height <point>]` |
-| Add image watermark to PDF | `watermark-pdf <file-or-dir> --image <image-path> [--watermark-left <point>] [--watermark-top <point>] [--watermark-width <point>] [--watermark-height <point>]` |
+| Add image watermark to DOCX | `watermark-docx <file-or-dir> --image <image-path> [--watermark-left <cm>] [--watermark-top <cm>] [--watermark-width <cm>] [--watermark-height <cm>]` |
+| Add image watermark to PDF | `watermark-pdf <file-or-dir> --image <image-path> [--watermark-left <cm>] [--watermark-top <cm>] [--watermark-width <cm>] [--watermark-height <cm>]` |
 
-Watermark position and size options use point units. DOCX and PDF defaults are `--watermark-left 4cm`, `--watermark-top 6cm`, `--watermark-width 4cm`. If `--watermark-height` is not passed, height scales proportionally from the image aspect ratio.
+Watermark position and size options use centimeter units. DOCX and PDF defaults are `--watermark-left 4`, `--watermark-top 6`, `--watermark-width 4`. If `--watermark-height` is not passed, height scales proportionally from the image aspect ratio.
 
 ## Path Handling
 

@@ -10,9 +10,13 @@ import tempfile
 # pip install pdf2docx
 
 POINTS_PER_CM = 72 / 2.54
-DEFAULT_WATERMARK_LEFT = 4 * POINTS_PER_CM
-DEFAULT_WATERMARK_TOP = 6 * POINTS_PER_CM
-DEFAULT_WATERMARK_WIDTH = 4 * POINTS_PER_CM
+DEFAULT_WATERMARK_LEFT = 4
+DEFAULT_WATERMARK_TOP = 6
+DEFAULT_WATERMARK_WIDTH = 4
+
+
+def cm_to_points(value):
+    return value * POINTS_PER_CM
 
 
 def pdf_to_images(pdf_path, output_dir):
@@ -93,10 +97,10 @@ def add_image_watermark(
     :param pdf_path: 要处理的 PDF 文件路径
     :param image_path: 水印图片路径
     :param output_path: 输出 PDF 路径。为 None 时覆盖原文件
-    :param left: 水印图片距离页面左侧的位置，单位为 point
-    :param top: 水印图片距离页面顶部的位置，单位为 point
-    :param width: 水印图片宽度，单位为 point
-    :param height: 水印图片高度，单位为 point。为 None 时按宽度等比自适应
+    :param left: 水印图片距离页面左侧的位置，单位为 cm
+    :param top: 水印图片距离页面顶部的位置，单位为 cm
+    :param width: 水印图片宽度，单位为 cm
+    :param height: 水印图片高度，单位为 cm。为 None 时按宽度等比自适应
     """
     if not pdf_path.endswith(".pdf"):
         return HandleResult.Skiped
@@ -123,7 +127,16 @@ def add_image_watermark(
     pdf_document = fitz.open(pdf_path)
     temp_path = None
     try:
-        watermark_rect = fitz.Rect(left, top, left + width, top + height)
+        left_points = cm_to_points(left)
+        top_points = cm_to_points(top)
+        width_points = cm_to_points(width)
+        height_points = cm_to_points(height)
+        watermark_rect = fitz.Rect(
+            left_points,
+            top_points,
+            left_points + width_points,
+            top_points + height_points,
+        )
         for page in pdf_document:
             page.insert_image(watermark_rect, filename=image_path, overlay=True)
 

@@ -99,20 +99,20 @@ def input_optional_float(prompt):
 def show_watermark_options():
     image_path = input("请输入水印图片路径: ").strip()
     return image_path, {
-        "left": input_float_with_default("请输入水印图片水平位置(point)", docx_utils.DEFAULT_WATERMARK_LEFT),
-        "top": input_float_with_default("请输入水印图片垂直位置(point)", docx_utils.DEFAULT_WATERMARK_TOP),
-        "width": input_float_with_default("请输入水印图片宽度(point)", docx_utils.DEFAULT_WATERMARK_WIDTH),
-        "height": input_optional_float("请输入水印图片高度(point)"),
+        "left": input_float_with_default("请输入水印图片水平位置(cm)", docx_utils.DEFAULT_WATERMARK_LEFT),
+        "top": input_float_with_default("请输入水印图片垂直位置(cm)", docx_utils.DEFAULT_WATERMARK_TOP),
+        "width": input_float_with_default("请输入水印图片宽度(cm)", docx_utils.DEFAULT_WATERMARK_WIDTH),
+        "height": input_optional_float("请输入水印图片高度(cm)"),
     }
 
 
 def show_pdf_watermark_options():
     image_path = input("请输入水印图片路径: ").strip()
     return image_path, {
-        "left": input_float_with_default("请输入水印图片距离左侧位置(point)", pdf_utils.DEFAULT_WATERMARK_LEFT),
-        "top": input_float_with_default("请输入水印图片距离顶部位置(point)", pdf_utils.DEFAULT_WATERMARK_TOP),
-        "width": input_float_with_default("请输入水印图片宽度(point)", pdf_utils.DEFAULT_WATERMARK_WIDTH),
-        "height": input_optional_float("请输入水印图片高度(point)"),
+        "left": input_float_with_default("请输入水印图片距离左侧位置(cm)", pdf_utils.DEFAULT_WATERMARK_LEFT),
+        "top": input_float_with_default("请输入水印图片距离顶部位置(cm)", pdf_utils.DEFAULT_WATERMARK_TOP),
+        "width": input_float_with_default("请输入水印图片宽度(cm)", pdf_utils.DEFAULT_WATERMARK_WIDTH),
+        "height": input_optional_float("请输入水印图片高度(cm)"),
     }
 
 
@@ -325,22 +325,22 @@ def build_parser():
     parser.add_argument(
         "--watermark-left",
         type=float,
-        help="水印图片水平位置，单位 point。watermark-docx/watermark-pdf 默认 4cm。",
+        help="水印图片水平位置，单位 cm。watermark-docx/watermark-pdf 默认 4。",
     )
     parser.add_argument(
         "--watermark-top",
         type=float,
-        help="水印图片垂直位置，单位 point。watermark-docx/watermark-pdf 默认 6cm。",
+        help="水印图片垂直位置，单位 cm。watermark-docx/watermark-pdf 默认 6。",
     )
     parser.add_argument(
         "--watermark-width",
         type=float,
-        help="水印图片宽度，单位 point。watermark-docx/watermark-pdf 默认 4cm。",
+        help="水印图片宽度，单位 cm。watermark-docx/watermark-pdf 默认 4。",
     )
     parser.add_argument(
         "--watermark-height",
         type=float,
-        help="水印图片高度，单位 point。未指定时按图片比例自适应。",
+        help="水印图片高度，单位 cm。未指定时按图片比例自适应。",
     )
     parser.add_argument(
         "--json",
