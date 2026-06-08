@@ -89,13 +89,18 @@ def input_float_with_default(prompt, default):
     return default if value == "" else float(value)
 
 
+def input_optional_float(prompt):
+    value = input(f"{prompt}(留空则按图片比例自适应): ").strip()
+    return None if value == "" else float(value)
+
+
 def show_watermark_options():
     image_path = input("请输入水印图片路径: ").strip()
     return image_path, {
         "left": input_float_with_default("请输入水印图片水平位置(point)", docx_utils.DEFAULT_WATERMARK_LEFT),
         "top": input_float_with_default("请输入水印图片垂直位置(point)", docx_utils.DEFAULT_WATERMARK_TOP),
         "width": input_float_with_default("请输入水印图片宽度(point)", docx_utils.DEFAULT_WATERMARK_WIDTH),
-        "height": input_float_with_default("请输入水印图片高度(point)", docx_utils.DEFAULT_WATERMARK_HEIGHT),
+        "height": input_optional_float("请输入水印图片高度(point)"),
     }
 
 
@@ -315,7 +320,7 @@ def build_parser():
     parser.add_argument(
         "--watermark-height",
         type=float,
-        help=f"watermark-docx 水印图片高度，单位 point，默认 {docx_utils.DEFAULT_WATERMARK_HEIGHT}。",
+        help="watermark-docx 水印图片高度，单位 point。未指定时按图片比例自适应。",
     )
     parser.add_argument(
         "--json",

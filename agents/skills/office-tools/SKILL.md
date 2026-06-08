@@ -33,7 +33,7 @@ python -m pip install --user .
 | Search text in DOCX files | `find-docx <file-or-dir> --query "keyword1 keyword2"` |
 | Add image watermark to DOCX | `watermark-docx <file-or-dir> --image <image-path> [--watermark-left <point>] [--watermark-top <point>] [--watermark-width <point>] [--watermark-height <point>]` |
 
-Watermark position and size options use Word point units. Defaults match the implementation: `--watermark-left 100`, `--watermark-top 200`, `--watermark-width 100`, `--watermark-height 100`.
+Watermark position and size options use Word point units. Defaults match the implementation: `--watermark-left 100`, `--watermark-top 200`, `--watermark-width 100`. If `--watermark-height` is not passed, height scales proportionally from the image aspect ratio.
 
 ## Path Handling
 
@@ -68,7 +68,7 @@ office-tools remove-author "D:\docs\a.docx" --json
 office-tools docx-to-pdf "D:\docs" --mode dir --json
 office-tools pdf-to-images "D:\docs\a.pdf" --json
 office-tools find-docx "D:\docs" --query "合同 金额" --json
-office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --watermark-left 100 --watermark-top 200 --watermark-width 100 --watermark-height 100 --json
+office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --watermark-left 100 --watermark-top 200 --watermark-width 100 --json
 office-tools merge-pdfs "D:\pdfs" --json
 ```
 

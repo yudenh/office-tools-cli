@@ -93,7 +93,7 @@ def add_image_watermark(
     left=DEFAULT_WATERMARK_LEFT,
     top=DEFAULT_WATERMARK_TOP,
     width=DEFAULT_WATERMARK_WIDTH,
-    height=DEFAULT_WATERMARK_HEIGHT,
+    height=None,
 ):
     """
     使用 pywin32 库为指定的 DOCX 文件添加指定图片水印。
@@ -103,7 +103,7 @@ def add_image_watermark(
     :param left: 水印图片的水平位置，单位为 point
     :param top: 水印图片的垂直位置，单位为 point
     :param width: 水印图片宽度，单位为 point
-    :param height: 水印图片高度，单位为 point
+    :param height: 水印图片高度，单位为 point。为 None 时按宽度等比自适应
     """
     # 创建 Word 应用程序对象
     word = win32.DispatchEx("Word.Application")
@@ -126,9 +126,11 @@ def add_image_watermark(
                 SaveWithDocument=True,
                 Left=left,
                 Top=top,
-                Width=width,
-                Height=height
             )
+            shape.LockAspectRatio = True
+            shape.Width = width
+            if height is not None:
+                shape.Height = height
             shape.RelativeHorizontalPosition = WD_RELATIVE_HORIZONTAL_POSITION_PAGE
             shape.RelativeVerticalPosition = WD_RELATIVE_VERTICAL_POSITION_PAGE
             # 设置图片的环绕方式为衬于文字下方
