@@ -1,6 +1,6 @@
 # Office Tools
 
-本项目提供一个本地 Office/PDF 文件处理命令行工具，支持 DOCX 作者信息清理、DOCX/PDF 转换、PDF 合并、DOCX 内容查找和 DOCX 图片水印。
+本项目提供一个本地 Office/PDF 文件处理命令行工具，支持 DOCX 作者信息清理、DOCX/PDF 转换、PDF 合并、DOCX 内容查找和图片水印。
 附带有SKILL，便于AI调用。
 
 资源推荐：[专为 AI 智能体设计的 Office 套件。零依赖。全平台。](https://github.com/iOfficeAI/OfficeCLI)
@@ -16,6 +16,7 @@
 | `merge-pdfs` | 合并目录下的 PDF |
 | `find-docx` | 在 DOCX 中查找字符串 |
 | `watermark-docx` | 给 DOCX 添加图片水印 |
+| `watermark-pdf` | 给 PDF 添加图片水印 |
 
 ## 环境要求
 
@@ -108,7 +109,13 @@ office-tools find-docx "D:\docs" --query "合同 金额" --json
 给 DOCX 添加图片水印：
 
 ```powershell
-office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --watermark-left 100 --watermark-top 200 --watermark-width 100 --watermark-height 100 --json
+office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --json
+```
+
+给 PDF 添加图片水印：
+
+```powershell
+office-tools watermark-pdf "D:\docs\a.pdf" --image "D:\logo.png" --json
 ```
 
 ## 参数
@@ -120,11 +127,11 @@ office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --watermark-l
 | `--mode auto\|file\|dir` | 输入路径类型，默认 `auto` |
 | `--output <path>` | 单文件操作的输出文件或目录 |
 | `--query <text>` | `find-docx` 要查找的字符串，多个关键词用空格分隔 |
-| `--image <path>` | `watermark-docx` 使用的水印图片路径 |
-| `--watermark-left <point>` | `watermark-docx` 水印图片水平位置，默认 `100` |
-| `--watermark-top <point>` | `watermark-docx` 水印图片垂直位置，默认 `200` |
-| `--watermark-width <point>` | `watermark-docx` 水印图片宽度，默认 `100` |
-| `--watermark-height <point>` | `watermark-docx` 水印图片高度，默认 `100` |
+| `--image <path>` | `watermark-docx` 和 `watermark-pdf` 使用的水印图片路径 |
+| `--watermark-left <point>` | 水印图片水平位置，`watermark-docx` 和 `watermark-pdf` 默认 `4cm` |
+| `--watermark-top <point>` | 水印图片垂直位置，`watermark-docx` 和 `watermark-pdf` 默认 `6cm` |
+| `--watermark-width <point>` | 水印图片宽度，`watermark-docx` 和 `watermark-pdf` 默认 `4cm` |
+| `--watermark-height <point>` | 水印图片高度，未指定时按图片比例自适应 |
 | `--json` | 输出 JSON，便于脚本或 AI 解析 |
 
 ## 路径模式
@@ -176,3 +183,4 @@ python -m pip uninstall office-tools-cli
 - 处理前请确认目标文件没有被 Word 或 WPS 打开。
 - `pdf-to-docx` 的转换质量取决于源 PDF 的结构。
 - `pdf-to-images` 如果输出目录已存在，会删除后重新生成。
+- `watermark-pdf` 默认覆盖原 PDF；单文件模式可用 `--output <path>` 输出到新文件。

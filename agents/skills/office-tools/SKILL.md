@@ -1,11 +1,11 @@
 ---
 name: office-tools
-description: Use when operating local Office files with this repository's Python CLI, including docx/pdf conversion, PDF merge, DOCX search, author cleanup, and watermark tasks.
+description: Use when operating local Office/PDF files with the globally installed `office-tools` CLI, including DOCX/PDF conversion, PDF merge, DOCX search, author cleanup, and watermark tasks.
 ---
 
 # Office Tools
 
-Use this skill when the user asks to process local Office files with the `office_tools` project.
+Use this skill when the user asks to process local Office/PDF files with the globally installed `office-tools` command.
 
 ## Invocation
 
@@ -15,10 +15,10 @@ Use the globally installed `office-tools` command. Prefer non-interactive CLI ca
 office-tools <command> <path> [options] --json
 ```
 
-If `office-tools` is not installed, install it from the repository root first:
+If `office-tools` is not available, ask the user to install it first and confirm the command is on `PATH`:
 
 ```powershell
-python -m pip install --user .
+office-tools --help
 ```
 
 ## Commands
@@ -32,8 +32,9 @@ python -m pip install --user .
 | Merge all PDFs in one directory | `merge-pdfs <dir>` |
 | Search text in DOCX files | `find-docx <file-or-dir> --query "keyword1 keyword2"` |
 | Add image watermark to DOCX | `watermark-docx <file-or-dir> --image <image-path> [--watermark-left <point>] [--watermark-top <point>] [--watermark-width <point>] [--watermark-height <point>]` |
+| Add image watermark to PDF | `watermark-pdf <file-or-dir> --image <image-path> [--watermark-left <point>] [--watermark-top <point>] [--watermark-width <point>] [--watermark-height <point>]` |
 
-Watermark position and size options use Word point units. Defaults match the implementation: `--watermark-left 100`, `--watermark-top 200`, `--watermark-width 100`. If `--watermark-height` is not passed, height scales proportionally from the image aspect ratio.
+Watermark position and size options use point units. DOCX and PDF defaults are `--watermark-left 4cm`, `--watermark-top 6cm`, `--watermark-width 4cm`. If `--watermark-height` is not passed, height scales proportionally from the image aspect ratio.
 
 ## Path Handling
 
@@ -68,7 +69,8 @@ office-tools remove-author "D:\docs\a.docx" --json
 office-tools docx-to-pdf "D:\docs" --mode dir --json
 office-tools pdf-to-images "D:\docs\a.pdf" --json
 office-tools find-docx "D:\docs" --query "合同 金额" --json
-office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --watermark-left 100 --watermark-top 200 --watermark-width 100 --json
+office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --json
+office-tools watermark-pdf "D:\docs\a.pdf" --image "D:\logo.png" --json
 office-tools merge-pdfs "D:\pdfs" --json
 ```
 
