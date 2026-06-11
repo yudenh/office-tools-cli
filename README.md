@@ -1,6 +1,6 @@
 # Office Tools
 
-本项目提供一个本地 Office/PDF 文件处理命令行工具，支持 DOCX 作者信息清理、DOCX/PDF 转换、PDF 合并、DOCX 内容查找和图片水印。
+本项目提供一个本地 Office/PDF 文件处理命令行工具，支持 DOCX/PDF 转换、PDF 合并和图片水印。
 附带有SKILL，便于AI调用。
 
 资源推荐：[专为 AI 智能体设计的 Office 套件。零依赖。全平台。](https://github.com/iOfficeAI/OfficeCLI)
@@ -9,12 +9,10 @@
 
 | 命令 | 功能 |
 | --- | --- |
-| `remove-author` | 清除 DOCX 作者信息 |
 | `docx-to-pdf` | DOCX 转 PDF |
 | `pdf-to-docx` | PDF 转 DOCX |
 | `pdf-to-images` | PDF 每页转 PNG 图片 |
 | `merge-pdfs` | 合并目录下的 PDF |
-| `find-docx` | 在 DOCX 中查找字符串 |
 | `watermark-docx` | 给 DOCX 添加图片水印 |
 | `watermark-pdf` | 给 PDF 添加图片水印 |
 
@@ -70,12 +68,6 @@ office-tools <command> <path> [options] --json
 
 ## 示例
 
-清除单个 DOCX 的作者信息：
-
-```powershell
-office-tools remove-author "D:\docs\a.docx" --json
-```
-
 批量将目录中的 DOCX 转为 PDF：
 
 ```powershell
@@ -100,12 +92,6 @@ office-tools pdf-to-images "D:\docs\a.pdf" --json
 office-tools merge-pdfs "D:\pdfs" --json
 ```
 
-在 DOCX 中查找关键词：
-
-```powershell
-office-tools find-docx "D:\docs" --query "合同 金额" --json
-```
-
 给 DOCX 添加图片水印：
 
 ```powershell
@@ -126,7 +112,6 @@ office-tools watermark-pdf "D:\docs\a.pdf" --image "D:\logo.png" --json
 | `path` | 输入文件或目录路径 |
 | `--mode auto\|file\|dir` | 输入路径类型，默认 `auto` |
 | `--output <path>` | 单文件操作的输出文件或目录 |
-| `--query <text>` | `find-docx` 要查找的字符串，多个关键词用空格分隔 |
 | `--image <path>` | `watermark-docx` 和 `watermark-pdf` 使用的水印图片路径 |
 | `--watermark-left <cm>` | 水印图片水平位置，`watermark-docx` 和 `watermark-pdf` 默认 `4` |
 | `--watermark-top <cm>` | 水印图片垂直位置，`watermark-docx` 和 `watermark-pdf` 默认 `6` |
@@ -149,7 +134,7 @@ office-tools watermark-pdf "D:\docs\a.pdf" --image "D:\logo.png" --json
 ```json
 {
   "ok": true,
-  "command": "find-docx",
+  "command": "docx-to-pdf",
   "mode": "dir",
   "input": "D:\\docs",
   "summary": {
@@ -162,8 +147,8 @@ office-tools watermark-pdf "D:\docs\a.pdf" --image "D:\logo.png" --json
     {
       "path": "D:\\docs\\a.docx",
       "ok": true,
-      "status": "matched",
-      "matches": ["合同"]
+      "status": "created",
+      "output": "D:\\docs\\a.pdf"
     }
   ]
 }

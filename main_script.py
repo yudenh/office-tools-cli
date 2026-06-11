@@ -7,29 +7,26 @@ from datetime import datetime
 from time import sleep
 from modules.constants import HandleResult
 
-suffix_list = [".docx", ".docx", ".pdf", ".pdf", ".pdf", ".docx", ".docx", ".pdf"]
+suffix_list = [".docx", ".pdf", ".pdf", ".pdf", ".docx", ".pdf"]
 func_names = [
-    "清除word作者",
     "word转pdf",
     "pdf转word",
     "pdf转图片",
     "合并pdf",
-    "在docx中查找",
     "word加水印",
     "pdf加水印",
 ]
 func_codes = [x + 1 for x in range(len(func_names))]
+func_indexes = [1, 2, 3, 4, 6, 7]
 handle_names = ["单个文件", "目录"]
 handle_codes = [x + 1 for x in range(len(handle_names))]
 split_line = "--------------------------------------------------"
 
 COMMANDS = {
-    "remove-author": {"index": 0, "suffix": ".docx", "target": "file_or_dir"},
     "docx-to-pdf": {"index": 1, "suffix": ".docx", "target": "file_or_dir"},
     "pdf-to-docx": {"index": 2, "suffix": ".pdf", "target": "file_or_dir"},
     "pdf-to-images": {"index": 3, "suffix": ".pdf", "target": "file_or_dir"},
     "merge-pdfs": {"index": 4, "suffix": ".pdf", "target": "dir"},
-    "find-docx": {"index": 5, "suffix": ".docx", "target": "file_or_dir"},
     "watermark-docx": {"index": 6, "suffix": ".docx", "target": "file_or_dir"},
     "watermark-pdf": {"index": 7, "suffix": ".pdf", "target": "file_or_dir"},
 }
@@ -120,11 +117,8 @@ def process_file(i, file_path):
     if i == 4:
         return
 
-    search_string = ""
     image_path = ""
     watermark_options = {}
-    if i == 5:
-        search_string = input("请输入要查找的字符串(多个用空格分开): ").strip()
     if i == 6:
         image_path, watermark_options = show_watermark_options()
     if i == 7:
@@ -134,9 +128,7 @@ def process_file(i, file_path):
     out_file = ""
     out_dir = ""
     try:
-        if i == 0:
-            result = docx_utils.remove_author_info_from_docx(file_path)
-        elif i == 1:
+        if i == 1:
             out_file = file_path.replace(".docx", ".pdf")
             result = docx_utils.docx_to_pdf(file_path, out_file)
         elif i == 2:
@@ -145,8 +137,6 @@ def process_file(i, file_path):
         elif i == 3:
             out_dir = file_path.replace(".pdf", ".pdf_imgs")
             result = pdf_utils.pdf_to_images(file_path, out_dir)
-        elif i == 5:
-            docx_utils.find_string_in_docx(file_path, search_string)
         elif i == 6:
             result = docx_utils.add_image_watermark(file_path, image_path, **watermark_options)
         elif i == 7:
@@ -192,11 +182,8 @@ def process_directory(i, suffix, dir_path):
         print("没有符合条件的文件")
         return
 
-    search_string = ""
     image_path = ""
     watermark_options = {}
-    if i == 5:
-        search_string = input("请输入要查找的字符串(多个用空格分开): ").strip()
     if i == 6:
         image_path, watermark_options = show_watermark_options()
     if i == 7:
@@ -214,9 +201,7 @@ def process_directory(i, suffix, dir_path):
     for file in file_list:
         file_path = file[1]
         try:
-            if i == 0:
-                result = docx_utils.remove_author_info_from_docx(file_path)
-            elif i == 1:
+            if i == 1:
                 out_file = file_path.replace(".docx", ".pdf")
                 result = docx_utils.docx_to_pdf(file_path, out_file)
             elif i == 2:
@@ -226,8 +211,6 @@ def process_directory(i, suffix, dir_path):
                 out_dir = file_path.replace(".pdf", ".pdf_imgs")
                 result = pdf_utils.pdf_to_images(file_path, out_dir)
             # i==4的情况已经在上面处理过了
-            elif i == 5:
-                docx_utils.find_string_in_docx(file_path, search_string)
             elif i == 6:
                 result = docx_utils.add_image_watermark(file_path, image_path, **watermark_options)
             elif i == 7:
@@ -249,7 +232,7 @@ def process_directory(i, suffix, dir_path):
             print("请检查文件是否存在, 或者是否已经被word或wps打开")
             print(e)
     print(split_line)
-    if i in [0, 1, 2]:
+    if i in [1, 2]:
         print("成功个数：" + str(success_cnt))
         print("失败个数：" + str(fail_cnt))
     print("完成")
@@ -273,8 +256,8 @@ def main():
                 break
             elif all_codes.index(choice) >= 0:
                 file_path = show_input_file_path()
-                func_index = choice // 10 - 1
-                suffix_index = func_index
+                func_index = func_indexes[choice // 10 - 1]
+                suffix_index = choice // 10 - 1
                 handle_type = choice % 10
                 if handle_type == 1:
                     process_file(func_index, file_path)
@@ -313,10 +296,6 @@ def build_parser():
     parser.add_argument(
         "--output",
         help="单文件操作的输出文件或目录。未指定时使用默认派生路径。",
-    )
-    parser.add_argument(
-        "--query",
-        help="find-docx 要查找的字符串。多个关键词用空格分隔。",
     )
     parser.add_argument(
         "--image",
@@ -360,7 +339,7 @@ def default_output_path(command, file_path):
     return ""
 
 
-def make_item(path, ok=True, status="", output="", error="", matches=None):
+def make_item(path, ok=True, status="", output="", error=""):
     item = {
         "path": path,
         "ok": ok,
@@ -370,8 +349,6 @@ def make_item(path, ok=True, status="", output="", error="", matches=None):
         item["output"] = output
     if error:
         item["error"] = error
-    if matches is not None:
-        item["matches"] = matches
     return item
 
 
@@ -388,11 +365,8 @@ def make_watermark_options(args):
     return options
 
 
-def run_file_command(command, file_path, output=None, query=None, image=None, watermark_options=None):
+def run_file_command(command, file_path, output=None, image=None, watermark_options=None):
     try:
-        if command == "remove-author":
-            result = docx_utils.remove_author_info_from_docx(file_path)
-            return make_item(file_path, status=RESULT_NAMES[result])
         if command == "docx-to-pdf":
             out_file = output or default_output_path(command, file_path)
             result = docx_utils.docx_to_pdf(file_path, out_file)
@@ -405,9 +379,6 @@ def run_file_command(command, file_path, output=None, query=None, image=None, wa
             out_dir = output or default_output_path(command, file_path)
             result = pdf_utils.pdf_to_images(file_path, out_dir)
             return make_item(file_path, status=RESULT_NAMES[result], output=out_dir)
-        if command == "find-docx":
-            matches = docx_utils.find_string_in_docx(file_path, query or "", quiet=True)
-            return make_item(file_path, status="matched" if matches else "not_found", matches=matches)
         if command == "watermark-docx":
             result = docx_utils.add_image_watermark(file_path, image, **(watermark_options or {}))
             return make_item(file_path, status=RESULT_NAMES[result])
@@ -432,8 +403,6 @@ def run_command(args):
 
     if spec["target"] == "dir" and mode != "dir":
         raise ValueError(f"{args.command} only accepts directory input")
-    if args.command == "find-docx" and not args.query:
-        raise ValueError("find-docx requires --query")
     if args.command in ["watermark-docx", "watermark-pdf"] and not args.image:
         raise ValueError(f"{args.command} requires --image")
 
@@ -453,7 +422,6 @@ def run_command(args):
                 run_file_command(
                     args.command,
                     file_path,
-                    query=args.query,
                     image=args.image,
                     watermark_options=watermark_options,
                 )
@@ -464,7 +432,6 @@ def run_command(args):
                 args.command,
                 args.path,
                 output=args.output,
-                query=args.query,
                 image=args.image,
                 watermark_options=watermark_options,
             )
@@ -499,8 +466,6 @@ def print_text_result(result):
         line = f"{item['status']}: {item['path']}"
         if "output" in item:
             line += f" -> {item['output']}"
-        if "matches" in item:
-            line += f" matches={len(item['matches'])}"
         if "error" in item:
             line += f" error={item['error']}"
         print(line)

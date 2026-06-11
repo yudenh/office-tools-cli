@@ -1,10 +1,9 @@
-from docx import Document
 import win32com.client as win32
 from modules import file_utils
 from modules.constants import HandleResult
 import os
 
-# pip install python-docx pywin32
+# pip install pywin32
 
 POINTS_PER_CM = 72 / 2.54
 DEFAULT_WATERMARK_LEFT = 4
@@ -21,22 +20,6 @@ WD_LINE_STYLE_NONE = 0
 
 def cm_to_points(value):
     return value * POINTS_PER_CM
-
-
-def remove_author_info_from_docx(file_path):
-    """
-    此函数用于删除指定docx文件中的作者信息。
-
-    :param file_path: 要处理的docx文件的路径
-    """
-    doc = Document(file_path)
-    core_properties = doc.core_properties
-    # 删除作者信息
-    core_properties.author = ""
-    core_properties.last_modified_by = ""
-    # 保存修改后的文件
-    doc.save(file_path)
-    return HandleResult.Processed
 
 
 def docx_to_pdf(docx_path, pdf_path):
@@ -71,25 +54,6 @@ def docx_to_pdf(docx_path, pdf_path):
             # 退出 Word 应用程序
             word.Quit()
     return result
-
-
-def find_string_in_docx(file_path, search_string, quiet=False):
-    """
-    在指定的docx文档中查找特定字符串。
-
-    :param file_path: 要处理的docx文件的路径
-    :param search_string: 要查找的字符串。多个用空格分开。
-    """
-    strs = [x.strip() for x in search_string.split(" ") if x.strip()]
-    doc = Document(file_path)
-    matches = []
-    for paragraph in doc.paragraphs:
-        for s in strs:
-            if s in paragraph.text:
-                matches.append(s)
-                if not quiet:
-                    print(f"找到字符串 '{s}' 在文档 '{file_path}' 中。")
-    return matches
 
 
 def add_image_watermark(

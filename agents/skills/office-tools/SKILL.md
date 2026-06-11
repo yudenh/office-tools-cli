@@ -1,6 +1,6 @@
 ---
 name: office-tools
-description: Use when operating local Office/PDF files with the globally installed `office-tools` CLI, including DOCX/PDF conversion, PDF merge, DOCX search, author cleanup, and watermark tasks.
+description: Use when operating local Office/PDF files with the globally installed `office-tools` CLI, including DOCX/PDF conversion, PDF merge, and watermark tasks.
 ---
 
 # Office Tools
@@ -25,12 +25,10 @@ office-tools --help
 
 | Task | Command |
 | --- | --- |
-| Clear DOCX author metadata | `remove-author <file-or-dir>` |
 | Convert DOCX to PDF | `docx-to-pdf <file-or-dir>` |
 | Convert PDF to DOCX | `pdf-to-docx <file-or-dir>` |
 | Render PDF pages to PNG images | `pdf-to-images <file-or-dir>` |
 | Merge all PDFs in one directory | `merge-pdfs <dir>` |
-| Search text in DOCX files | `find-docx <file-or-dir> --query "keyword1 keyword2"` |
 | Add image watermark to DOCX | `watermark-docx <file-or-dir> --image <image-path> [--watermark-left <cm>] [--watermark-top <cm>] [--watermark-width <cm>] [--watermark-height <cm>]` |
 | Add image watermark to PDF | `watermark-pdf <file-or-dir> --image <image-path> [--watermark-left <cm>] [--watermark-top <cm>] [--watermark-width <cm>] [--watermark-height <cm>]` |
 
@@ -50,12 +48,12 @@ With `--json`, the command prints one JSON object:
 ```json
 {
   "ok": true,
-  "command": "find-docx",
+  "command": "docx-to-pdf",
   "mode": "dir",
   "input": "D:\\docs",
   "summary": { "total": 2, "ok": 2, "failed": 0, "elapsed_seconds": 0.12 },
   "items": [
-    { "path": "D:\\docs\\a.docx", "ok": true, "status": "matched", "matches": ["合同"] }
+    { "path": "D:\\docs\\a.docx", "ok": true, "status": "created", "output": "D:\\docs\\a.pdf" }
   ]
 }
 ```
@@ -65,10 +63,8 @@ Treat process exit code `0` as success and non-zero as failure. Also inspect `su
 ## Examples
 
 ```powershell
-office-tools remove-author "D:\docs\a.docx" --json
 office-tools docx-to-pdf "D:\docs" --mode dir --json
 office-tools pdf-to-images "D:\docs\a.pdf" --json
-office-tools find-docx "D:\docs" --query "合同 金额" --json
 office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --json
 office-tools watermark-pdf "D:\docs\a.pdf" --image "D:\logo.png" --json
 office-tools merge-pdfs "D:\pdfs" --json
