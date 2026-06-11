@@ -33,7 +33,7 @@ python -m pip install --user .
 安装后可在任意目录使用全局命令：
 
 ```powershell
-office-tools
+office-tools --help
 ```
 
 如果提示找不到 `office-tools` 命令，请确认 Python 用户脚本目录已加入 `PATH`。
@@ -48,13 +48,7 @@ Windows 常见目录：
 
 ## 用法
 
-无参数运行会进入交互式菜单：
-
-```powershell
-office-tools
-```
-
-非交互命令格式：
+命令格式：
 
 ```powershell
 office-tools <command> <path> [options]
