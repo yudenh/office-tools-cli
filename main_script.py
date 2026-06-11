@@ -7,6 +7,7 @@ from datetime import datetime
 from modules.constants import HandleResult
 
 COMMANDS = {
+    "txt-to-docx": {"index": 0, "suffix": ".txt", "target": "file_or_dir"},
     "docx-to-pdf": {"index": 1, "suffix": ".docx", "target": "file_or_dir"},
     "pdf-to-docx": {"index": 2, "suffix": ".pdf", "target": "file_or_dir"},
     "pdf-to-images": {"index": 3, "suffix": ".pdf", "target": "file_or_dir"},
@@ -83,6 +84,8 @@ def build_parser():
 
 
 def default_output_path(command, file_path):
+    if command == "txt-to-docx":
+        return os.path.splitext(file_path)[0] + ".docx"
     if command == "docx-to-pdf":
         return os.path.splitext(file_path)[0] + ".pdf"
     if command == "pdf-to-docx":
@@ -120,6 +123,10 @@ def make_watermark_options(args):
 
 def run_file_command(command, file_path, output=None, image=None, watermark_options=None):
     try:
+        if command == "txt-to-docx":
+            out_file = output or default_output_path(command, file_path)
+            result = docx_utils.txt_to_docx(file_path, out_file)
+            return make_item(file_path, status=RESULT_NAMES[result], output=out_file)
         if command == "docx-to-pdf":
             out_file = output or default_output_path(command, file_path)
             result = docx_utils.docx_to_pdf(file_path, out_file)

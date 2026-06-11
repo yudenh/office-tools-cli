@@ -1,6 +1,6 @@
 ---
 name: office-tools
-description: Use when operating local Office/PDF files with the globally installed `office-tools` CLI, including DOCX/PDF conversion, PDF merge, and watermark tasks.
+description: Use when operating local Office/PDF files with the globally installed `office-tools` CLI, including TXT/DOCX/PDF conversion, PDF merge, and watermark tasks.
 ---
 
 # Office Tools
@@ -25,6 +25,7 @@ office-tools --help
 
 | Task | Command |
 | --- | --- |
+| Convert TXT to DOCX | `txt-to-docx <file-or-dir>` |
 | Convert DOCX to PDF | `docx-to-pdf <file-or-dir>` |
 | Convert PDF to DOCX | `pdf-to-docx <file-or-dir>` |
 | Render PDF pages to PNG images | `pdf-to-images <file-or-dir>` |
@@ -40,6 +41,7 @@ Watermark position and size options use centimeter units. DOCX and PDF defaults 
 - Use `--mode file` or `--mode dir` when the intent must be explicit.
 - Directory mode recursively processes matching files and skips temporary Office files whose names start with `~$`.
 - `merge-pdfs` only accepts a directory.
+- `txt-to-docx` processes `.txt` files and writes same-name `.docx` files.
 
 ## Output
 
@@ -64,6 +66,7 @@ Treat process exit code `0` as success and non-zero as failure. Also inspect `su
 
 ```powershell
 office-tools docx-to-pdf "D:\docs" --mode dir --json
+office-tools txt-to-docx "D:\docs" --mode dir --json
 office-tools pdf-to-images "D:\docs\a.pdf" --json
 office-tools watermark-docx "D:\docs\a.docx" --image "D:\logo.png" --json
 office-tools watermark-pdf "D:\docs\a.pdf" --image "D:\logo.png" --json
@@ -76,4 +79,5 @@ office-tools merge-pdfs "D:\pdfs" --json
 - Make sure target files are not open in Word/WPS before modifying or converting them.
 - `pdf-to-docx` quality depends on the source PDF structure.
 - `pdf-to-images` overwrites the derived output directory if it already exists.
+- `txt-to-docx` reads UTF-8 TXT, removes empty lines, and converts obvious tab, pipe, or multi-space-delimited blocks into tables.
 - **Error handling**: If a command fails or raises an error, stop immediately and report the error to the user. Do NOT attempt to diagnose or fix the issue yourself.

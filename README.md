@@ -1,6 +1,6 @@
 # Office Tools
 
-本项目提供一个本地 Office/PDF 文件处理命令行工具，支持 DOCX/PDF 转换、PDF 合并和图片水印。
+本项目提供一个本地 Office/PDF 文件处理命令行工具，支持 TXT/DOCX/PDF 转换、PDF 合并和图片水印。
 附带有SKILL，便于AI调用。
 
 资源推荐：[专为 AI 智能体设计的 Office 套件。零依赖。全平台。](https://github.com/iOfficeAI/OfficeCLI)
@@ -9,6 +9,7 @@
 
 | 命令 | 功能 |
 | --- | --- |
+| `txt-to-docx` | TXT 转 DOCX，自动识别表格块 |
 | `docx-to-pdf` | DOCX 转 PDF |
 | `pdf-to-docx` | PDF 转 DOCX |
 | `pdf-to-images` | PDF 每页转 PNG 图片 |
@@ -61,6 +62,18 @@ office-tools <command> <path> [options] --json
 ```
 
 ## 示例
+
+将 TXT 转为同名 DOCX：
+
+```powershell
+office-tools txt-to-docx "D:\docs\a.txt" --json
+```
+
+批量将目录中的 TXT 转为 DOCX：
+
+```powershell
+office-tools txt-to-docx "D:\docs" --mode dir --json
+```
 
 批量将目录中的 DOCX 转为 PDF：
 
@@ -120,6 +133,7 @@ office-tools watermark-pdf "D:\docs\a.pdf" --image "D:\logo.png" --json
 - `--mode dir` 递归处理目录中匹配后缀的文件。
 - 目录处理会跳过以 `~$` 开头的 Office 临时文件。
 - `merge-pdfs` 只接受目录输入。
+- `txt-to-docx` 在目录模式下递归处理 `.txt` 文件，输出同名 `.docx`。
 
 ## JSON 输出
 
@@ -163,3 +177,4 @@ python -m pip uninstall office-tools-cli
 - `pdf-to-docx` 的转换质量取决于源 PDF 的结构。
 - `pdf-to-images` 如果输出目录已存在，会删除后重新生成。
 - `watermark-pdf` 默认覆盖原 PDF；单文件模式可用 `--output <path>` 输出到新文件。
+- `txt-to-docx` 会读取 UTF-8 TXT，移除空行，并将连续的制表符、竖线或两个以上空格分隔文本转成表格。
